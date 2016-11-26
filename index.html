@@ -1,0 +1,100 @@
+html>
+<head>
+< !--กำหนด style ของ button-- >
+<style>
+.button - red, .button - blue
+{
+color: white;
+  border - radius: 9px;
+font - family: Arial;
+  font - size: 25px;
+  padding: 50px 80px;
+}
+.button - red: hover: active, .button - blue: hover: active
+{
+position: relative; top: 3px; color: yellow;
+}
+.button - red
+{
+background: rgb(202, 60, 60);
+}
+.button - blue
+{
+background: rgb(100, 116, 255);
+}
+h1
+{
+color: black; font - family: Arial;
+  font - size: 40px;
+text - align: center;
+}
+< / style >
+
+<script>
+var ajax = null;
+< !--เงื่อนไขเลือกสร้าง Object Ajax เพื่อให้รองรับกับ Browser ต่างๆ-- >
+if (window.XMLHttpRequest)
+{
+  ajax = new XMLHttpRequest();
+}
+else
+{
+  ajax = new ActiveXObject("Microsoft.XMLHTTP");
+}
+< !—function Load-- >
+function ajaxLoad(method , URL, displayElementId, sendData)
+{
+  if (!ajax)
+  {
+    alert("not support");
+    return;
+  }
+  ajax.open(method, URL, true);    < !--เปิดการเชื่อมต่อ-- >
+  ajax.on - readystatechange = function() < !--เรียกใช้ Functionให้ทำงาน-- >
+  {
+    if (ajax.readyState == 4 && ajax.status == 200) < !—ตรวจสอบสถานะของ page
+      ที่เปิด (4 = complete, 200 = OK)-- >
+    {
+      var ajax_result = ajax.responseText; < !--อ่านค่าป็น text mode-- >
+      < !--elementสำหรับสแดงผล-- >
+      var el = document.getElementById(displayElementId);
+      el.innerHTML = ajax_result;
+    }
+  }
+  ajax.send(sendData);
+}
+< !—function สำหรับ update ค่า temp, Humidity-- >
+function update_temp_humi()
+{
+  var URL = "/Temp_Humi.html";
+  ajaxLoad("GET", URL, 'temp_humi', null);
+}
+< / script >
+< / head >
+<body>
+<h1>Demo Web Server Ajax < / h1 >
+<h2>Temp and Humidity < / h2 >
+<div id = "temp_humi">
+          <h3>Temp = xx C < / h3 >
+                     <h3>Humidity = xx % < / h3 >
+                                    < / div >
+                                    <div>
+                                    <p>
+                                    < input class = "button-red" type = "button" value = "Relay 1 On" on - click = "Relay('r1on')" >
+                                          < input class = "button-blue" type = "button" value = "Relay 1 Off" on - click = "Relay('r1off')" >
+                                                < / P >
+                                                <p>
+                                                < input class = "button-red" type = "button" value = "Relay 2 On" on - click = "Relay('r2on')" >
+                                                      < input class = "button-blue" type = "button" value = "Relay 2 Off" on - click = "Relay('r2off')" >
+                                                            < / P >
+                                                            < / div >
+
+                                                            < !— สำหรับเรียก update ค่า temp, Humidity ทุกๆ 2 วินาที-- >
+                                                            <script>
+                                                            function Relay(state) {
+          ajaxLoad("GET", state + '.html', null, null);
+      }
+setInterval("update_temp_humi()", 2000);
+< / script >
+< / body >
+< / html >
